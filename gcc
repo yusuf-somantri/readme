@@ -1,0 +1,34 @@
+#!bin/bash
+IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
+git clone https://github.com/najahiiii/aarch64-linux-gnu.git -b 4.9-mirror gcc
+git clone https://github.com/yusuf-somantri/afive.git anykernel
+
+GCC="$(pwd)/gcc/bin/aarch64-linux-android-"
+curl -s -F chat_id=-1001229936519 -F sticker="CAADBQAD0AADfULDLtrtiR6t9hoyFgQ" https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendSticker
+curl -s -X POST https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendMessage?chat_id=-1001229936519 -d "disable_web_page_preview=true" -d "parse_mode=html&text=<b>Botak Kernel new build is up!!</b>%0A<b>Compile Started !!</b>%0A<b>For device</b> <code>Rolex (Redmi 4A)</code>%0A<b>Under Commit</b> <code>$(git log --pretty=format:'"%h : %s"' -1)</code>%0A<b>Compiler</b> <code>$(${GCC}gcc --version | head -n 1)</code>%0A<b>Started on</b> <code>$(TZ=Asia/Jakarta date)</code>%0A<b>BuildStatus:</b> #Untested"
+tanggal=$(TZ=Asia/Jakarta date +'%H%M-%d%m%y')
+START=$(date +"%s")
+export ARCH=arm64
+export KBUILD_BUILD_USER=Yusuf
+export KBUILD_BUILD_HOST=botak-kernel
+# Fin Error
+function finerr() {
+        curl -s -X POST https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendMessage?chat_id=-1001229936519 -d "disable_web_page_preview=true" -d "parse_mode=html&text=Build throw an error(s)"
+        exit 1
+}
+make -s -C $(pwd) O=out rolex_defconfig
+make -s -C $(pwd) CROSS_COMPILE=${GCC} O=out -j8 -l4
+if ! [ -a $IMAGE ]; then
+	finerr
+	exit 1
+fi
+cp out/arch/arm64/boot/Image.gz-dtb anykernel/zImage
+cd anykernel
+zip -r9 botak-kernel-${tanggal}.zip *
+END=$(date +"%s")
+DIFF=$(($END - $START))
+curl -F chat_id="-1001229936519" -F document=@"botak-kernel-${tanggal}.zip" -F "disable_web_page_preview=true" -F "parse_mode=html" -F caption="Build took $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) second(s). | #rolex" https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendDocument
+cd ..
+rm -rf out
+rm -rf anykernel/zImage
+rm -rf anykernel/botak *.zip
