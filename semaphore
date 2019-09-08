@@ -9,7 +9,7 @@ tanggal=$(TZ=Asia/Jakarta date +'%H%M-%d%m%y')
 START=$(date +"%s")
 export ARCH=arm64
 export KBUILD_BUILD_USER=Yusuf
-export KBUILD_BUILD_HOST=botak-kernel
+export KBUILD_BUILD_HOST=fall in love
 # Fin Error
 function finerr() {
 curl -s -X POST "https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendMessage" -d chat_id="-1001229936519" -d "disable_web_page_preview=true" -d "parse_mode=markdown" -d text="Build throw an error(s)"
@@ -30,4 +30,4 @@ curl -F chat_id="-1001229936519" -F document=@"botak-kernel-${tanggal}.zip " -F 
 cd ..
 rm -rf out
 rm -rf anykernel/zImage
-rm -rf anykernel/botak-kernel .zip *
+rm -rf anykernel/fall in love .zip *
