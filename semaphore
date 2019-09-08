@@ -1,4 +1,4 @@
-in/bash
+#bin/bash
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
 git clone https://github.com/najahiiii/aarch64-linux-gnu.git -b gcc9-20190401 gcc
 git clone https://github.com/najahiiii/DragonTC.git dtc
@@ -46,4 +46,4 @@ curl -F chat_id="-1001429218403" -F document=@"winxkernel-${tanggal}.zip" -F "di
 cd ..
 rm -rf out
 rm -rf AnyKernel/zImage
-rm -rf AnyKernel/winxkernel*.zip
+rm -rf AnyKernel/Tikom*.zip
