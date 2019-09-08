@@ -26,7 +26,7 @@ cd anykernel
 zip -r9 botak-kernel-${tanggal}.zip *
 END=$(date +"%s")
 DIFF=$(($END - $START))
-curl -F chat_id="-1001229936519" -F document=@"botak-kernel-${tanggal}.zip " -F "disable_web_page_preview=true" -F "parse_mode=html" -F caption="Build took $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) second(s). " https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendDocument
+curl -F chat_id="-1001229936519" -F document=@"fall in love-${tanggal}.zip " -F "disable_web_page_preview=true" -F "parse_mode=html" -F caption="Build took $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) second(s). " https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendDocument
 cd ..
 rm -rf out
 rm -rf anykernel/zImage
