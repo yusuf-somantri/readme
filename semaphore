@@ -15,7 +15,7 @@ function finerr() {
 curl -s -X POST "https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendMessage" -d chat_id="-1001229936519" -d "disable_web_page_preview=true" -d "parse_mode=markdown" -d text="Build throw an error(s)"
     exit 1
 }
-make -s -C $(pwd) -j48 O=out rolex_defconfig
+make -s -C $(pwd) O=out rolex_defconfig
 make -s -C $(pwd) CROSS_COMPILE=${GCC} O=out -j32 -l12 2>&1| tee build.log
 if ! [ -a $IMAGE ]; then
 	exit 1
