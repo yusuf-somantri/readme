@@ -1,0 +1,49 @@
+in/bash
+IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
+git clone https://github.com/najahiiii/aarch64-linux-gnu.git -b gcc9-20190401 gcc
+git clone https://github.com/najahiiii/DragonTC.git dtc
+wget http://mirrorku.me/Toolchains/GNU%20GCC/ARM/arm-linux-gnueabi-9.x-gnu-20190518.tar.xz
+
+tar -xf arm-linux-gnueabi-9.x-gnu-20190518.tar.xz
+GCCARM="$(pwd)/arm-linux-gnueabi/bin/arm-linux-gnueabi-"
+GCC="$(pwd)/gcc/bin/aarch64-linux-gnu-"
+CT="$(pwd)/dtc/bin/clang"
+curl -s -F chat_id=-1001229936519 -F sticker="CAADBQAD0AADfULDLtrtiR6t9hoyFgQ" https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendSticker
+curl -s -X POST https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendMessage?chat_id=-1001229936519 -d "disable_web_page_preview=true" -d "parse_mode=html&text=<b>// Tikom //</b>%0ACompile Started"'!'"%0A<b>For device</b> <code>ROLEX (Redmi 4A)</code>%0A<b>For Oreo/Pie</b>%0A<b>Under Commit</b> <code>$(git log --pretty=format:'"%h : %s"' -1)</code>%0A<b>Compiler</b> <code>$(${GCC}gcc --version | head -n 1)</code>%0A<b>Compiler</b> <code>$(${GCCARM}gcc --version | head -n 1)</code>%0A<b>Clang</b> <code>$(${CT} --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')</code>%0A<b>Started on</b> <code>$(date)</code>%0A<b>Build Status:</b> #untested"
+tanggal=$(date +'%H%M-%d%m%y')
+START=$(date +"%s")
+export ARCH=arm64
+export KBUILD_BUILD_USER=yusuf
+export KBUILD_BUILD_HOST=Tikom
+export USE_CCACHE=1
+export CACHE_DIR=~/.ccache
+
+# Sprunge
+function sprunge() {
+    cat build.log | curl -F 'sprunge=<-' http://sprunge.us > link
+    HASIL="$(cat link)"
+}
+
+# Fin Error
+function finerr() {
+        sprunge
+        curl -s -X POST https://api.telegram.org/bot972733242:AAGkE_A52TAqVp-OtdsDHgnxtGHqqP10Zq8/sendMessage -d "disable_web_page_preview=true" -d "parse_mode=html&text=Build throw an error(s) | <b>Build logs</b> <a href='${HASIL}'>here</a>"
+        exit 1
+}
+make -s -C $(pwd) O=out rolex_defconfig
+make -s -C $(pwd) CC=${CT} CROSS_COMPILE_ARM32=${GCCARM} CROSS_COMPILE=${GCC} O=out -j32 -l12 2>&1| tee build.log
+if ! [ -a $IMAGE ]; then
+	finerr
+	exit 1
+fi
+cp out/arch/arm64/boot/Image.gz-dtb AnyKernel/zImage
+sprunge
+cd AnyKernel
+zip -r9 Tikom-${tanggal}.zip *
+END=$(date +"%s")
+DIFF=$(($END - $START))
+curl -F chat_id="-1001429218403" -F document=@"winxkernel-${tanggal}.zip" -F "disable_web_page_preview=true" -F "parse_mode=html" -F caption="Build took $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) second(s). <b>Logs</b> <a href='${HASIL}'>here</a> | #riva" https://api.telegram.org/bot832348112:AAEC1kdRlhkbpVbSSE3Q26XgWjIPE7PH0zw/sendDocument
+cd ..
+rm -rf out
+rm -rf AnyKernel/zImage
+rm -rf AnyKernel/winxkernel*.zip
