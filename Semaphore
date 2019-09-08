@@ -1,7 +1,6 @@
 #!bin/bash
 IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
-git clone https://github.com/najahiiii/aarch64-linux-gnu.git -b gcc9-20190401 gcc
-git clone https://github.com/najahiiii/DragonTC.git dtc
+git clone https://github.com/najahiiii/aarch64-linux-gnu.git -b gcc9-20190401
 git clone https://github.com/yusuf-somantri/afive.git anykernel
 get http://mirrorku.me/Toolchains/GNU%20GCC/ARM/arm-linux-gnueabi-9.x-gnu-20190518.tar.xz
 
